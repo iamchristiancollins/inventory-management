@@ -22,14 +22,14 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase.js";
 
-const style = {
+const modalStyle = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: "white",
-  border: "2px solid #000",
+  bgcolor: "background.paper",
+  borderRadius: 3,
   boxShadow: 24,
   p: 4,
   display: "flex",
@@ -40,27 +40,31 @@ const style = {
 const SearchBar = ({ search, handleSearch }) => {
   return (
     <Box
-      width="800px"
-      height="50px"
-      bgcolor={"#ADD8E6"}
-      display={"flex"}
-      justifyContent={"center"}
-      alignItems={"center"}
+      width="750px"
+      height="60px"
+      bgcolor="background.paper"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      p={1}
+      borderRadius={2}
+      boxShadow={1}
+      mb={3}
     >
       <TextField
         id="outlined-basic"
         label="Search"
-        width="100%"
         variant="outlined"
+        fullWidth
         value={search}
         onChange={handleSearch}
+        sx={{ bgcolor: "#f9f9f9", borderRadius: 1 }}
       />
     </Box>
   );
 };
 
 export default function Home() {
-  // We'll add our component logic here
   const [inventory, setInventory] = useState([]);
   const [open, setOpen] = useState(false);
   const [itemName, setItemName] = useState("");
@@ -111,15 +115,18 @@ export default function Home() {
     }
     await updateInventory();
   };
+
   return (
     <Box
       width="100vw"
       height="100vh"
-      display={"flex"}
-      justifyContent={"center"}
-      flexDirection={"column"}
-      alignItems={"center"}
+      display="flex"
+      justifyContent="center"
+      flexDirection="column"
+      alignItems="center"
       gap={2}
+      p={2}
+      bgcolor="#f0f2f5"
     >
       <Modal
         open={open}
@@ -127,11 +134,11 @@ export default function Home() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={modalStyle}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Add Item
           </Typography>
-          <Stack width="100%" direction={"row"} spacing={2}>
+          <Stack width="100%" direction="row" spacing={2}>
             <TextField
               id="outlined-basic"
               label="Item"
@@ -141,7 +148,7 @@ export default function Home() {
               onChange={(e) => setItemName(e.target.value)}
             />
             <Button
-              variant="outlined"
+              variant="contained"
               onClick={() => {
                 addItem(itemName);
                 setItemName("");
@@ -153,24 +160,37 @@ export default function Home() {
           </Stack>
         </Box>
       </Modal>
-      <Button variant="contained" onClick={handleOpen}>
+      <Button variant="contained" onClick={handleOpen} sx={{ mb: 2 }}>
         Add New Item
       </Button>
-      <Box border={"1px solid #333"}>
+      <Box
+        width="800px"
+        p={3}
+        bgcolor="background.paper"
+        borderRadius={2}
+        boxShadow={3}
+      >
         <SearchBar search={search} handleSearch={handleSearch} />
         <Box
-          width="800px"
-          height="100px"
-          bgcolor={"#ADD8E6"}
-          display={"flex"}
-          justifyContent={"center"}
-          alignItems={"center"}
+          width="100%"
+          height="80px"
+          bgcolor="primary.main"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          borderRadius={2}
+          boxShadow={1}
+          mb={3}
         >
-          <Typography variant={"h2"} color={"#333"} textAlign={"center"}>
+          <Typography
+            variant="h4"
+            color="primary.contrastText"
+            textAlign="center"
+          >
             Inventory Items
           </Typography>
         </Box>
-        <Stack width="800px" height="400px" spacing={2} overflow={"auto"}>
+        <Stack width="100%" spacing={2} overflow="auto" height="400px">
           {inventory
             .filter((item) =>
               item.name.toLowerCase().includes(search.toLowerCase())
@@ -178,25 +198,26 @@ export default function Home() {
             .map(({ name, quantity }) => (
               <Box
                 key={name}
-                width="100%"
-                minHeight="50px"
-                display={"flex"}
-                justifyContent={"space-between"}
-                alignItems={"center"}
-                bgcolor={"#f0f0f0"}
-                paddingX={5}
+                display="grid"
+                gridTemplateColumns="3fr 2fr 3fr"
+                alignItems="center"
+                bgcolor="background.paper"
+                p={2}
+                borderRadius={1}
+                boxShadow={1}
+                gap={2}
               >
                 <Typography
-                  variant={"body1"}
-                  color={"#333"}
-                  textAlign={"center"}
+                  variant="body1"
+                  color="text.primary"
+                  textAlign="left"
                 >
                   {name.charAt(0).toUpperCase() + name.slice(1)}
                 </Typography>
                 <Typography
-                  variant={"body1"}
-                  color={"#333"}
-                  textAlign={"center"}
+                  variant="body1"
+                  color="text.primary"
+                  textAlign="center"
                 >
                   Quantity: {quantity}
                 </Typography>
