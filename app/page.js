@@ -37,6 +37,28 @@ const style = {
   gap: 3,
 };
 
+const SearchBar = ({ search, handleSearch }) => {
+  return (
+    <Box
+      width="800px"
+      height="50px"
+      bgcolor={"#ADD8E6"}
+      display={"flex"}
+      justifyContent={"center"}
+      alignItems={"center"}
+    >
+      <TextField
+        id="outlined-basic"
+        label="Search"
+        width="100%"
+        variant="outlined"
+        value={search}
+        onChange={handleSearch}
+      />
+    </Box>
+  );
+};
+
 export default function Home() {
   // We'll add our component logic here
   const [inventory, setInventory] = useState([]);
@@ -44,6 +66,11 @@ export default function Home() {
   const [itemName, setItemName] = useState("");
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [search, setSearch] = useState("");
+
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+  };
 
   const updateInventory = async () => {
     const snapshot = query(collection(db, "inventory"));
@@ -130,6 +157,7 @@ export default function Home() {
         Add New Item
       </Button>
       <Box border={"1px solid #333"}>
+        <SearchBar search={search} handleSearch={handleSearch} />
         <Box
           width="800px"
           height="100px"
@@ -143,33 +171,45 @@ export default function Home() {
           </Typography>
         </Box>
         <Stack width="800px" height="400px" spacing={2} overflow={"auto"}>
-          {inventory.map(({ name, quantity }) => (
-            <Box
-              key={name}
-              width="100%"
-              minHeight="50px"
-              display={"flex"}
-              justifyContent={"space-between"}
-              alignItems={"center"}
-              bgcolor={"#f0f0f0"}
-              paddingX={5}
-            >
-              <Typography variant={"p"} color={"#333"} textAlign={"center"}>
-                {name.charAt(0).toUpperCase() + name.slice(1)}
-              </Typography>
-              <Typography variant={"p"} color={"#333"} textAlign={"center"}>
-                Quantity: {quantity}
-              </Typography>
-              <ButtonGroup>
-                <Button variant="contained" onClick={() => addItem(name)}>
-                  Add
-                </Button>
-                <Button variant="contained" onClick={() => removeItem(name)}>
-                  Remove
-                </Button>
-              </ButtonGroup>
-            </Box>
-          ))}
+          {inventory
+            .filter((item) =>
+              item.name.toLowerCase().includes(search.toLowerCase())
+            )
+            .map(({ name, quantity }) => (
+              <Box
+                key={name}
+                width="100%"
+                minHeight="50px"
+                display={"flex"}
+                justifyContent={"space-between"}
+                alignItems={"center"}
+                bgcolor={"#f0f0f0"}
+                paddingX={5}
+              >
+                <Typography
+                  variant={"body1"}
+                  color={"#333"}
+                  textAlign={"center"}
+                >
+                  {name.charAt(0).toUpperCase() + name.slice(1)}
+                </Typography>
+                <Typography
+                  variant={"body1"}
+                  color={"#333"}
+                  textAlign={"center"}
+                >
+                  Quantity: {quantity}
+                </Typography>
+                <ButtonGroup>
+                  <Button variant="contained" onClick={() => addItem(name)}>
+                    Add
+                  </Button>
+                  <Button variant="contained" onClick={() => removeItem(name)}>
+                    Remove
+                  </Button>
+                </ButtonGroup>
+              </Box>
+            ))}
         </Stack>
       </Box>
     </Box>
