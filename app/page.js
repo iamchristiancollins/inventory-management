@@ -183,7 +183,7 @@ export default function Home() {
           mb={3}
         >
           <Typography
-            variant="h4"
+            variant="h3"
             color="primary.contrastText"
             textAlign="center"
           >
